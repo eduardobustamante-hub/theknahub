@@ -1,412 +1,237 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thekna HUB | Elite Innovation & Industrial Intelligence</title>
+    <title>Thekna Store | Eaton High-Performance Stock</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --thekna-pink: #ec4899; --thekna-purple: #9333ea; }
-        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1a1a1a; overflow-x: hidden; }
-        h1, h2, h3, h4, .tech-font { font-family: 'Orbitron', sans-serif; }
-        
-        .bg-tech-master {
-            background-color: #ffffff;
-            background-image: radial-gradient(circle at 2px 2px, #f1f1f1 1.5px, transparent 0),
-                linear-gradient(rgba(240, 240, 240, 0.5) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(240, 240, 240, 0.5) 1px, transparent 1px);
-            background-size: 40px 40px, 80px 80px, 80px 80px;
+        :root { --tech-cyan: #00e5ff; --soft-bg: #fdfdfd; --dark-slate: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--soft-bg); color: #1e293b; overflow-x: hidden; scroll-behavior: smooth; }
+
+        .tech-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.03;
+            background-image: url('https://img.icons8.com/ios-filled/100/000000/sensor.png'), url('https://img.icons8.com/ios-filled/100/000000/circuit.png');
+            background-repeat: space; background-size: 180px;
         }
 
-        #mesh-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.4; }
+        .promo-bar {
+            background: var(--dark-slate); color: white; font-size: 11px; padding: 10px;
+            text-align: center; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
+        }
 
-        .neon-black-box { background: #000; border: 1px solid #333; transition: 0.3s; z-index: 10; position: relative; }
-        .btn-elite { background: #000; color: #fff; border: none; transition: 0.4s; cursor: pointer; border-radius: 9999px; }
-        .btn-elite:hover { background: var(--thekna-pink) !important; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4); }
+        /* Botones de Marca en el Panel Lateral */
+        .brand-btn {
+            text-align: left; padding: 12px 18px; width: 100%; font-size: 12px; font-weight: 600;
+            color: #64748b; border-radius: 12px; transition: all 0.3s ease; border-left: 0 solid var(--tech-cyan);
+            background: rgba(255,255,255,0.5);
+        }
+        .brand-btn:hover { background: white; color: var(--tech-cyan); transform: translateX(5px); border-left: 5px solid var(--tech-cyan); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .brand-btn.active { background: var(--dark-slate); color: white; border-left: 5px solid var(--tech-cyan); }
 
-        .service-page { display: none; position: fixed; inset: 0; background: #ffffff; z-index: 5000; overflow-y: auto; }
-        .service-page.active { display: block; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        /* Tarjetas de Producto */
+        .product-card { background: white; border: 1px solid #e2e8f0; border-radius: 20px; transition: all 0.4s ease; }
+        .product-card:hover { border-color: var(--tech-cyan); box-shadow: 0 20px 40px rgba(0, 229, 255, 0.1); transform: translateY(-4px); }
 
-        .node-card { position: relative; overflow: hidden; transition: 0.5s; background: #f9fafb; border: 1px solid #eee; }
-        .node-card .address-overlay { position: absolute; inset: 0; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; font-size: 10px; opacity: 0; transform: translateY(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .node-card:hover .address-overlay { opacity: 1; transform: translateY(0); }
-
-        .brand-track { display: flex; width: max-content; animation: scroll-brands 45s linear infinite; }
-        @keyframes scroll-brands { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        .whatsapp-float { position: fixed; bottom: 30px; left: 30px; width: 65px; height: 65px; background: #25d366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 6000; transition: 0.3s; }
-        #chatbot-trigger { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 6000; cursor: pointer; transition: 0.3s; }
-        #chat-window { width: 350px; height: 550px; background: white; border-radius: 30px; box-shadow: 0 30px 80px rgba(0,0,0,0.15); display: none; flex-direction: column; position: fixed; bottom: 110px; right: 30px; z-index: 7000; border: 1px solid #f0f0f0; overflow: hidden; }
+        /* Chatbot Console */
+        #chat-window {
+            display: none; position: fixed; bottom: 100px; right: 25px; width: 380px; height: 550px;
+            background: white; border-radius: 24px; flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15); z-index: 3000; border: 1px solid #e2e8f0; overflow: hidden;
+        }
+        .bot-msg { background: #f1f5f9; padding: 12px 16px; border-radius: 18px 18px 18px 0; font-size: 13px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
+        .user-msg { background: var(--dark-slate); color: white; padding: 12px 16px; border-radius: 18px 18px 0 18px; font-size: 13px; margin-left: auto; margin-bottom: 10px; width: fit-content; }
         
-        .node-pulse { position: relative; display: inline-block; }
-        .node-pulse::before { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: var(--thekna-pink); opacity: 0; animation: pulse-node 2s infinite; }
-        @keyframes pulse-node { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(2.5); opacity: 0; } }
+        .tech-sheet {
+            background: var(--dark-slate); color: var(--tech-cyan); font-family: 'Courier New', monospace;
+            padding: 15px; border-radius: 12px; margin-top: 10px; font-size: 11px; border-left: 4px solid var(--tech-cyan);
+        }
     </style>
 </head>
-<body class="bg-tech-master">
+<body>
+    <div class="tech-pattern"></div>
+    <div class="promo-bar">⚡ LÍNEA EATON: 10% OFF EXTRA • PRECIOS ESPECIALES PARA REVENDEDORES Y TABLERISTAS ⚡</div>
 
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-8 py-5 flex justify-between items-center">
+    <nav class="bg-white/80 backdrop-blur-xl border-b sticky top-0 z-[1000] px-10 py-5 flex flex-wrap justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
-            <svg width="35" height="35" viewBox="0 0 100 100">
-                <path d="M50 5 L95 25 V75 L50 95 L5 75 V25 Z" fill="none" stroke="#ec4899" stroke-width="6"/>
-                <path d="M35 40 L50 25 L65 40 M50 25 V75" stroke="#000" stroke-width="8" stroke-linecap="round"/>
-            </svg>
-            <div class="tech-font font-black tracking-tighter text-xl text-gray-900 uppercase">THEKNA<span style="color: var(--thekna-pink);">HUB</span></div>
+            <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white"><i class="fas fa-bolt text-cyan-400"></i></div>
+            <span class="text-2xl font-black tracking-tighter text-slate-900 uppercase">THEKNA<span class="text-slate-400 font-light italic">STORE</span></span>
         </div>
-        <div class="hidden md:flex gap-8 text-[10px] tech-font uppercase font-bold tracking-widest text-gray-400">
-            <a href="#nosotros" class="hover:text-pink-500 transition">Nosotros</a>
-            <a href="#unidades" class="hover:text-pink-500 transition">Servicios</a>
-            <a href="#contacto" class="hover:text-pink-500 transition">Contacto</a>
+        <div class="flex items-center gap-6">
+            <a href="https://catalogothekna-at.my.canva.site/" target="_blank" class="hidden md:block text-[11px] font-bold text-slate-500 hover:text-cyan-500 transition uppercase tracking-widest">Catálogo</a>
+            <a href="https://theknahub.com" target="_blank" class="hidden md:block text-[11px] font-bold text-slate-500 hover:text-cyan-500 transition uppercase tracking-widest">TheknaHub</a>
+            <button onclick="openWA('Busco asesoría técnica para un proyecto.')" class="bg-green-500 text-white px-6 py-2.5 rounded-full text-[10px] font-bold hover:bg-green-600 transition flex items-center gap-2">
+                <i class="fab fa-whatsapp"></i> SOPORTE TÉCNICO
+            </button>
         </div>
-        <button onclick="document.getElementById('contacto').scrollIntoView()" class="btn-elite px-8 py-2 text-[10px] tech-font uppercase tracking-widest">Cotiza Ya</button>
     </nav>
 
-    <header class="relative pt-56 pb-20 px-8 text-center max-w-7xl mx-auto flex flex-col items-center overflow-hidden">
-        <canvas id="mesh-canvas"></canvas>
-        <div class="relative z-10">
-            <h1 class="text-6xl md:text-8xl font-black leading-tight mb-8 uppercase tracking-tighter text-gray-900">EL NÚCLEO DE LA <br><span class="text-pink-500 italic">INDUSTRIA 4.0</span></h1>
+    <div class="max-w-[1600px] mx-auto px-10 py-12">
+        <div class="flex flex-col lg:flex-row gap-12">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-20" id="stats-section">
-                <div class="neon-black-box p-10 rounded-[3rem] text-center shadow-xl">
-                    <div class="text-4xl font-black text-white"><span class="counter" data-target="130">0</span>+</div>
-                    <p class="text-[8px] tech-font font-bold mt-4 uppercase text-purple-400">Talento IT en Cías Internacionales</p>
-                </div>
-                <div class="neon-black-box p-10 rounded-[3rem] text-center shadow-xl">
-                    <div class="text-4xl font-black text-white"><span class="counter" data-target="9">0</span>+</div>
-                    <p class="text-[8px] tech-font font-bold mt-4 uppercase text-pink-400">Proyectos Cloud en LATAM</p>
-                </div>
-                <div class="neon-black-box p-10 rounded-[3rem] text-center shadow-xl">
-                    <div class="text-4xl font-black text-white"><span class="counter" data-target="2700">0</span>+</div>
-                    <p class="text-[8px] tech-font font-bold mt-4 uppercase text-teal-400">Componentes de Automatización</p>
-                </div>
-                <div class="neon-black-box p-10 rounded-[3rem] text-center border-white/20">
-                    <div class="text-4xl font-black text-white"><span class="counter" data-target="200">0</span>+</div>
-                    <p class="text-[8px] tech-font font-bold mt-4 uppercase text-white">Socios Atendidos</p>
-                </div>
-            </div>
-        </div>
-    </header>
+            <aside class="w-full lg:w-64 flex-shrink-0">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 border-b pb-2">Marcas_</p>
+                <div id="brand-menu" class="flex flex-col gap-2">
+                    <button onclick="filterBrand('ALL')" class="brand-btn active" id="btn-ALL">TODO EL STOCK</button>
+                    </div>
+            </aside>
 
-    <section id="nosotros" class="py-32 px-8 bg-white border-y">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl md:text-5xl font-black tech-font uppercase italic mb-12 text-gray-900">Conectando Visiones_</h2>
-            <p class="text-xl md:text-2xl font-light text-gray-700 leading-relaxed mb-8 italic">
-                En Thekna HUB, no vendemos servicios. Diseñamos soluciones que conectan talento, tecnología y transformación.
-            </p>
-            <p class="text-lg text-gray-500 leading-relaxed">
-                Somos una firma de innovación tecnológica con tres pilares estratégicos: head hunting especializado, desarrollo de software a la medida y comercialización de equipos de automatización industrial. Cada uno de nuestros servicios está diseñado para resolver desafíos reales con precisión, velocidad y visión de futuro.
-            </p>
-        </div>
-    </section>
+            <main class="flex-1">
+                <div class="mb-12 relative">
+                    <i class="fas fa-search absolute left-6 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                    <input type="text" id="master-search" oninput="uiSearch()" placeholder="Localiza SKU, marca o descripción técnica..." class="w-full pl-14 pr-8 py-5 rounded-2xl border border-slate-200 outline-none focus:border-cyan-400 shadow-xl text-sm transition-all bg-white">
+                    <div id="loader" class="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-bold text-cyan-600 uppercase tracking-widest italic opacity-50"></div>
+                </div>
+                <div id="grid-view" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8"></div>
+            </main>
 
-    <section class="py-32 px-8 bg-black text-white">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-black tech-font uppercase italic mb-20 text-center">The HUB Methodology_</h2>
-            <div class="grid md:grid-cols-4 gap-12 text-sm text-left">
-                <div class="border-l border-pink-500 pl-8 py-4"><h4 class="font-bold mb-4 uppercase">Diagnóstico</h4><p class="text-gray-400">Auditoría profunda de brechas técnicas y de talento.</p></div>
-                <div class="border-l border-pink-500 pl-8 py-4"><h4 class="font-bold mb-4 uppercase">Arquitectura</h4><p class="text-gray-400">Diseño de ecosistemas inteligentes (Software + Hardware).</p></div>
-                <div class="border-l border-pink-500 pl-8 py-4"><h4 class="font-bold mb-4 uppercase">Inyección</h4><p class="text-gray-400">Implementación de código y capital humano de alto nivel.</p></div>
-                <div class="border-l border-pink-500 pl-8 py-4"><h4 class="font-bold mb-4 uppercase">Escalamiento</h4><p class="text-gray-400">Trazabilidad total y crecimiento continuo 4.0.</p></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-32 px-8 bg-white text-gray-900">
-        <div class="max-w-7xl mx-auto text-center">
-            <h2 class="text-4xl md:text-6xl font-black tech-font mb-20 uppercase italic tracking-tighter">La Diferencia es la <span class="text-pink-500">Precisión</span></h2>
-            <div class="grid lg:grid-cols-3 gap-12 text-left">
-                <div class="p-10 bg-gray-50 rounded-[3rem] border border-purple-100 hover:shadow-2xl transition">
-                    <h4 class="tech-font text-purple-600 text-[10px] mb-6 uppercase tracking-widest">_Thekna RH</h4>
-                    <p class="font-bold text-xl mb-4 italic leading-tight">Ingeniería Humana</p>
-                    <p class="text-gray-600 text-sm leading-relaxed">Porque cuando el propósito se alinea con el talento, la ejecución se convierte en innovación, y el compromiso en resultados sostenibles.</p>
-                </div>
-                <div class="p-10 bg-gray-50 rounded-[3rem] border border-pink-100 hover:shadow-2xl transition">
-                    <h4 class="tech-font text-pink-500 text-[10px] mb-6 uppercase tracking-widest">_Thekna IT</h4>
-                    <p class="font-bold text-xl mb-4 italic leading-tight">Lógica Digital</p>
-                    <p class="text-gray-600 text-sm leading-relaxed">Nuestro enfoque es modular, escalable y centrado en el usuario. Cada línea de código responde a una necesidad real.</p>
-                </div>
-                <div class="p-10 bg-gray-50 rounded-[3rem] border border-teal-100 hover:shadow-2xl transition">
-                    <h4 class="tech-font text-teal-600 text-[10px] mb-6 uppercase tracking-widest">_Thekna AT</h4>
-                    <p class="font-bold text-xl mb-4 italic leading-tight">Potencia Operativa</p>
-                    <p class="text-gray-600 text-sm leading-relaxed">Acompañamos a empresas industriales en su transición hacia la automatización inteligente e integración IoT.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="unidades" class="py-24 px-8 max-w-7xl mx-auto grid md:grid-cols-3 gap-16 text-center text-gray-900">
-        <div onclick="openPage('page-rh')" class="cursor-pointer group">
-            <i class="fas fa-fingerprint text-purple-600 text-6xl mb-8"></i>
-            <h3 class="text-xl font-bold tech-font uppercase">THEKNA RH</h3>
-            <span class="text-purple-600 font-bold tech-font text-[9px] underline uppercase tracking-widest">Ver Protocolo</span>
-        </div>
-        <div onclick="openPage('page-it')" class="cursor-pointer group">
-            <i class="fas fa-terminal text-pink-500 text-6xl mb-8"></i>
-            <h3 class="text-xl font-bold tech-font uppercase">THEKNA IT</h3>
-            <span class="text-pink-500 font-bold tech-font text-[9px] underline uppercase tracking-widest">Ver Protocolo</span>
-        </div>
-        <div onclick="openPage('page-at')" class="cursor-pointer group">
-            <i class="fas fa-microchip text-teal-600 text-6xl mb-8"></i>
-            <h3 class="text-xl font-bold tech-font uppercase">THEKNA AT</h3>
-            <span class="text-teal-600 font-bold tech-font text-[9px] underline uppercase tracking-widest">Ver Protocolo</span>
-        </div>
-    </section>
-
-    <section class="py-24 px-8 bg-gray-50 border-y">
-        <div class="max-w-7xl mx-auto text-gray-900">
-            <h2 class="text-3xl font-black tech-font uppercase mb-16 italic text-center underline decoration-pink-500 underline-offset-8">Radar_Thekna_Insights_</h2>
-            <div class="grid md:grid-cols-3 gap-10">
-                <div class="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm transition hover:shadow-xl">
-                    <span class="text-[9px] font-bold text-pink-500 tech-font uppercase">Protocolo 2026</span>
-                    <h3 class="text-lg font-bold mt-4 mb-4 uppercase">Código de Red 3.0</h3>
-                    <p class="text-gray-500 text-xs">Objetivo: alcanzar un Factor de Potencia de 0.97 para evitar sanciones severas.</p>
-                </div>
-                <div class="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm transition hover:shadow-xl">
-                    <span class="text-[9px] font-bold text-pink-500 tech-font uppercase">Talento</span>
-                    <h3 class="text-lg font-bold mt-4 mb-4 uppercase">Mapeo de ADN</h3>
-                    <p class="text-gray-500 text-sm font-light">Elevamos la eficiencia organizacional conectando talento con propósito estratégico.</p>
-                </div>
-                <div class="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm transition hover:shadow-xl">
-                    <span class="text-[9px] font-bold text-pink-500 tech-font uppercase">Industry 4.0</span>
-                    <h3 class="text-lg font-bold mt-4 mb-4 uppercase">Digital Enterprise</h3>
-                    <p class="text-gray-500 text-sm font-light">Convergencia total entre el mundo real y digital para la transformación total.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div id="page-rh" class="service-page p-12 md:p-32 bg-tech-master text-gray-700">
-        <button onclick="closePage('page-rh')" class="fixed top-12 right-12 text-5xl text-gray-300 hover:text-purple-600 transition z-[6000]">&times;</button>
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-6xl md:text-8xl font-black tech-font text-purple-600 mb-12 uppercase italic">Thekna RH</h2>
-            <div class="space-y-10 text-xl font-light text-justify leading-relaxed">
-                <p>En un mercado donde los perfiles IT son escasos, volátiles y altamente competitivos, Thekna Hub no reclutamos: <strong>conectamos visiones.</strong></p>
-                <p>Nuestros procesos están diseñados para identificar profesionales que no solo dominan la tecnología, sino que resuenan con la misión de tu empresa.</p>
-                <div class="bg-purple-50 p-12 rounded-[4rem] border-l-[20px] border-purple-600 shadow-xl">
-                    <h4 class="tech-font font-bold mb-6 text-purple-700 uppercase tracking-widest">Mapeo de Talento Estratégico:</h4>
-                    <p class="text-sm mb-6">Utilizamos inteligencia de datos, análisis de cultura organizacional y técnicas de mapeo para identificar a los profesionales que realmente pueden transformar tu operación.</p>
-                    <ul class="grid md:grid-cols-2 gap-4 text-sm font-bold uppercase">
-                        <li>• Desarrolladores Full Stack</li>
-                        <li>• Ingenieros de Datos</li>
-                        <li>• DevOps & Cloud Experts</li>
-                        <li>• Arquitectos de Software & CTOs</li>
-                    </ul>
-                </div>
-            </div>
         </div>
     </div>
-
-    <div id="page-it" class="service-page p-12 md:p-32 bg-tech-master text-gray-700">
-        <button onclick="closePage('page-it')" class="fixed top-12 right-12 text-5xl text-gray-300 hover:text-pink-500 transition z-[6000]">&times;</button>
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-6xl md:text-8xl font-black tech-font text-pink-500 mb-12 uppercase italic text-center">Thekna IT</h2>
-            <div class="space-y-8 text-xl font-light text-justify leading-relaxed">
-                <p><strong>Cada línea de código que escribimos responde a una necesidad real.</strong> Diseñamos productos digitales desde cero: desde MVPs para startups hasta plataformas empresariales robustas.</p>
-                <p>Trabajamos con metodologías ágiles, equipos multidisciplinarios y una obsesión por la experiencia del usuario.</p>
-                <div class="bg-pink-50 p-12 rounded-[4rem] border-l-[20px] border-pink-500 shadow-xl text-left">
-                    <h4 class="tech-font font-bold mb-6 text-pink-600 uppercase text-xs">Propuesta Tecnológica:</h4>
-                    <ul class="grid md:grid-cols-2 gap-6 text-sm font-bold uppercase">
-                        <li>• Desarrollo Full Stack (React, Node.js, Python)</li>
-                        <li>• Integraciones APIs, ERPs y CRMs</li>
-                        <li>• Arquitectura Cloud & DevOps Integrado</li>
-                        <li>• UX/UI con enfoque en conversión</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="page-at" class="service-page p-12 md:p-32 bg-tech-master text-gray-700">
-        <button onclick="closePage('page-at')" class="fixed top-12 right-12 text-5xl text-gray-300 hover:text-teal-600 transition z-[6000]">&times;</button>
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-5xl md:text-8xl font-black tech-font text-teal-600 mb-16 uppercase italic text-center">Thekna AT</h2>
-            <div class="bg-black py-12 rounded-[3rem] overflow-hidden mb-16 border border-teal-500/30">
-                <div class="brand-track gap-20 text-teal-400 font-black tech-font text-lg uppercase">
-                    <span>SIEMENS</span> <span>EATON</span> <span>ALLEN BRADLEY</span> <span>PEPPERL+FUCHS</span> <span>SCHMERSAL</span> <span>HELUKABEL</span> <span>WAGO</span> <span>KBR</span> <span>DKC</span> <span>CKD</span> <span>HONEYWELL</span> <span>FESTO</span>
-                </div>
-            </div>
-            <div class="space-y-12 text-xl font-light leading-relaxed text-justify">
-                <p class="italic font-bold border-l-8 border-teal-600 pl-8 uppercase">Acompañamos a empresas industriales en su transición hacia la automatización inteligente.</p>
-                <p>Comercializamos e integramos equipos de control, sensores, PLCs, HMIs y soluciones IoT industrial con marcas líderes globales.</p>
-                <div class="grid md:grid-cols-2 gap-10">
-                    <div class="bg-teal-50 p-10 rounded-3xl border border-teal-200">
-                        <h4 class="tech-font font-bold text-teal-700 uppercase mb-4 text-xs">Soluciones de Ingeniería:</h4>
-                        <ul class="text-sm font-bold space-y-2 uppercase leading-relaxed">
-                            <li>• Corrección de Factor de Potencia</li>
-                            <li>• Trazabilidad y Monitoreo en tiempo real</li>
-                            <li>• Seguridad Funcional e Instalación</li>
-                            <li>• Capacitación y Soporte Postventa</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-900 p-10 rounded-3xl text-white text-center flex flex-col justify-center shadow-2xl">
-                        <p class="text-[9px] tech-font uppercase mb-4 opacity-50 font-bold tracking-widest">Biblioteca Técnica 2026</p>
-                        <a href="https://catalogothekna-at.my.canva.site/" target="_blank" class="bg-white text-black py-4 rounded-full font-bold tech-font text-[9px] uppercase hover:bg-pink-500 hover:text-white transition-all">ABRIR CATÁLOGO_</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <section id="contacto" class="py-40 px-8 bg-white border-t border-gray-100 text-gray-900">
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-24">
-            <div class="space-y-12">
-                <h2 class="text-4xl md:text-6xl font-black tech-font uppercase italic mb-20 leading-none">Terminal_De_<br><span class="text-pink-500">Contacto_</span></h2>
-                <div class="grid md:grid-cols-2 gap-8 text-[10px] font-bold uppercase tracking-widest">
-                    <div class="node-card p-10 rounded-[2.5rem] shadow-sm">
-                        <span class="text-pink-500 font-black">CDMX (Sede)</span>
-                        <div class="address-overlay uppercase">Oriente 67 #2912, Asturias, 06890, Cuauhtémoc, CDMX.</div>
-                    </div>
-                    <div class="node-card p-10 rounded-[2.5rem] shadow-sm">
-                        <span class="text-pink-500 font-black">Guadalajara</span>
-                        <div class="address-overlay uppercase">Av. De las Américas #1545, Providencia Piso 23, Jal.</div>
-                    </div>
-                    <div class="node-card p-10 rounded-[2.5rem] shadow-sm">
-                        <span class="text-pink-500 font-black">Monterrey</span>
-                        <div class="address-overlay uppercase">Avenida Benito Juarez 1102 Piso 4, Centro, NL.</div>
-                    </div>
-                    <div class="node-card p-10 rounded-[2.5rem] shadow-sm">
-                        <span class="text-pink-500 font-black">Querétaro</span>
-                        <div class="address-overlay uppercase">Acceso a La Central 300-Piso 14, Centro Sur, Santiago de Qro.</div>
-                    </div>
-                    <div class="node-card p-10 rounded-[2.5rem] shadow-sm col-span-full">
-                        <span class="text-pink-500 font-black">Puebla</span>
-                        <div class="address-overlay uppercase">Blvd. Osa Mayor No.4929, Piso 4 Local 1, Reserva Territorial, Pue.</div>
-                    </div>
-                </div>
-                <div class="pt-8 border-t space-y-6">
-                    <p class="text-2xl font-bold tech-font uppercase italic text-gray-900 tracking-tighter"><i class="fas fa-phone-alt mr-4 text-pink-500"></i>+52 59 9690 1908</p>
-                    <p class="text-xl font-bold tech-font lowercase underline decoration-pink-500 text-gray-900 tracking-widest">info@theknahub.com</p>
-                </div>
-            </div>
-            <div class="bg-gray-50 p-12 rounded-[4rem] border border-gray-100 shadow-2xl">
-                <form id="thekna-form" action="https://formspree.io/f/xdalyewn" method="POST" class="space-y-6 text-left">
-                    <input type="text" name="name" required placeholder="IDENTIDAD_CLIENTE" class="w-full p-6 border focus:border-pink-500 outline-none tech-font text-xs uppercase bg-white rounded-2xl shadow-sm">
-                    <input type="email" name="email" required placeholder="MAIL_SERVER" class="w-full p-6 border focus:border-pink-500 outline-none tech-font text-xs uppercase bg-white rounded-2xl shadow-sm">
-                    <textarea name="message" required placeholder="REQUERIMIENTO_TÉCNICO_DETALLADO" class="w-full p-6 border focus:border-pink-500 outline-none h-40 tech-font text-xs uppercase bg-white rounded-2xl shadow-sm"></textarea>
-                    <button type="submit" id="btn-submit" class="w-full bg-black text-white py-10 tech-font font-black btn-elite text-sm uppercase tracking-[0.5em] rounded-2xl">Ejecutar Envío_</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <a href="https://wa.me/525996901908" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
-    <div id="chatbot-trigger" onclick="toggleChat()"><i class="fas fa-terminal"></i></div>
 
     <div id="chat-window">
-        <div class="bg-pink-600 text-white p-6 font-black tech-font text-[9px] flex justify-between uppercase tracking-widest"><span>System_TH_Expert</span><span onclick="toggleChat()" class="cursor-pointer">X</span></div>
-        <div id="chat-content" class="flex-1 p-6 overflow-y-auto bg-gray-50 font-medium text-[11px] space-y-4">
-            <div class="bot-msg italic">SISTEMA ONLINE... ¿Cómo puedo optimizar su arquitectura tecnológica hoy? Reconozco +8,000 partes industriales.</div>
+        <div class="bg-slate-900 text-white p-5 flex justify-between items-center">
+            <span class="text-[10px] font-bold tracking-widest uppercase">Thekna Tech Advisor</span>
+            <button onclick="toggleChat()">✕</button>
         </div>
-        <div class="p-4 border-t flex gap-3 bg-white">
-            <input type="text" id="chat-input" placeholder="Consultar (ej. Siemens, React)..." class="flex-1 outline-none text-xs" onkeypress="if(event.key==='Enter') handleChat()"><button onclick="handleChat()" class="text-pink-500 p-2"><i class="fas fa-play"></i></button>
+        <div id="chat-content" class="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50 scroll-smooth">
+            <div class="bot-msg">¡Bienvenido! Soy su consultor de ingeniería. Escriba un <b>SKU</b> para ver detalles técnicos o solicite una <b>cotización</b>.</div>
+        </div>
+        <div class="p-4 border-t bg-white">
+            <input type="text" id="chat-input" onkeypress="if(event.key==='Enter') chatLogic()" placeholder="Pregunte o confirme cotización..." class="w-full p-4 border rounded-2xl outline-none text-sm focus:border-cyan-400 bg-slate-50">
         </div>
     </div>
 
-    <footer class="py-20 text-center text-gray-400 text-[10px] tech-font uppercase tracking-[0.5em] border-t bg-white">
-        Thekna Hub &copy; 2026 | Ingeniería & Innovación Digital | México.
+    <div onclick="toggleChat()" class="fixed bottom-8 right-8 w-16 h-16 bg-cyan-400 text-slate-900 rounded-2xl flex items-center justify-center text-3xl shadow-2xl cursor-pointer hover:rotate-12 transition-all z-[2000]">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <footer class="mt-20 border-t border-slate-200 bg-white py-12">
+        <div class="max-w-7xl mx-auto px-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div>
+                    <span class="text-sm font-black text-slate-900 uppercase">THEKNA<span class="text-slate-400 font-light italic">STORE</span></span>
+                    <p class="text-[11px] text-slate-500 mt-4 max-w-sm">Especialistas en control y protección industrial. Optimizando la ingeniería con stock inmediato.</p>
+                </div>
+                <div class="text-[10px] text-slate-400 md:text-right space-y-3">
+                    <p class="font-bold uppercase tracking-widest text-slate-500">Aviso Legal_</p>
+                    <p>THEKNA es una comercializadora independiente. Los logotipos son propiedad de sus dueños. <b>No somos distribuidores directos autorizados.</b></p>
+                    <div class="pt-2">© 2026 THEKNA STORE | <a href="#" onclick="alert('Datos protegidos.')" class="underline">Privacidad</a></div>
+                </div>
+            </div>
+        </div>
     </footer>
 
+    <script src="stock.js"></script>
+
     <script>
-        // Malla Cinética Maestra
-        const canvas = document.getElementById('mesh-canvas');
-        const ctx = canvas.getContext('2d');
-        let points = [];
-        const maxDist = 180;
+        const waPhone = "525540431038";
+        let lastProductFound = null;
+
+        function openWA(text) { window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`, '_blank'); }
 
         function init() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            points = [];
-            for (let i = 0; i < 90; i++) {
-                points.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5
+            if (typeof masterStock !== 'undefined') {
+                // CARGA DINÁMICA DE MARCAS EN EL PANEL LATERAL
+                const brands = [...new Set(masterStock.map(item => item.b))].sort();
+                const menu = document.getElementById('brand-menu');
+                brands.forEach(b => {
+                    menu.innerHTML += `<button onclick="filterBrand('${b}')" class="brand-btn" id="btn-${b}">${b}</button>`;
                 });
+
+                renderStore(masterStock.slice(0, 24));
+                document.getElementById('loader').innerText = `SINC: ${masterStock.length.toLocaleString()} SKUs`;
             }
         }
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = '#ec4899';
-            ctx.lineWidth = 0.4;
+        function renderStore(items) {
+            const grid = document.getElementById('grid-view');
+            grid.innerHTML = items.map(i => `
+                <div class="product-card p-8 flex flex-col h-full group">
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-[9px] font-black text-slate-400 tracking-[0.2em]">${i.b}</span>
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-[13px] font-bold text-slate-800 leading-snug mb-2 uppercase group-hover:text-cyan-600 transition-colors">${i.n}</h4>
+                        <span class="text-[10px] font-mono text-cyan-600 bg-cyan-50 px-2 py-1 rounded border border-cyan-100">SKU: ${i.s}</span>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-slate-50 flex justify-between items-end">
+                        <div>
+                            <span class="text-[10px] text-red-400 line-through block">${i.pO}</span>
+                            <span class="text-2xl font-black text-slate-900 tracking-tighter">${i.pF} <small class="text-[10px] text-slate-400 font-normal">USD</small></span>
+                        </div>
+                        <button onclick="openWA('Hola! 👋 Me interesa cotizar marca ${i.b} SKU: ${i.s}')" class="bg-slate-900 text-white hover:bg-cyan-400 hover:text-black w-12 h-12 rounded-xl transition-all shadow-lg flex items-center justify-center"><i class="fas fa-shopping-cart text-sm"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterBrand(b) {
+            document.querySelectorAll('.brand-btn').forEach(btn => btn.classList.remove('active'));
+            if(b === 'ALL') {
+                document.getElementById('btn-ALL').classList.add('active');
+                renderStore(masterStock.slice(0, 24));
+            } else {
+                const btn = document.getElementById(`btn-${b}`);
+                if(btn) btn.classList.add('active');
+                renderStore(masterStock.filter(i => i.b === b));
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function uiSearch() {
+            const q = document.getElementById('master-search').value.toUpperCase();
+            if (q.length < 2) { renderStore(masterStock.slice(0, 24)); return; }
+            renderStore(masterStock.filter(i => i.s.includes(q) || i.n.toUpperCase().includes(q) || i.b.includes(q)).slice(0, 48));
+        }
+
+        function toggleChat() { const w = document.getElementById('chat-window'); w.style.display = (w.style.display === 'flex' ? 'none' : 'flex'); }
+
+        function chatLogic() {
+            const input = document.getElementById('chat-input');
+            const content = document.getElementById('chat-content');
+            const q = input.value.trim().toUpperCase();
+            if(!q) return;
+
+            content.innerHTML += `<div class="user-msg">${input.value}</div>`;
             
-            points.forEach((p, i) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            // Lógica de cierre de venta: si dice SI y tenemos un producto previo
+            const afirmaciones = ["SI", "POR FAVOR", "COTIZAR", "OK", "CLARO", "DALE"];
+            if (afirmaciones.some(word => q.includes(word)) && lastProductFound) {
+                setTimeout(() => {
+                    content.innerHTML += `<div class="bot-msg">Entendido. Redirigiendo a WhatsApp para procesar la cotización de <b>${lastProductFound.s}</b>...</div>`;
+                    content.scrollTop = content.scrollHeight;
+                    setTimeout(() => { openWA(`Cotización solicitada vía Chatbot.\nSKU: ${lastProductFound.s}\nMarca: ${lastProductFound.b}`); }, 1000);
+                }, 400);
+                input.value = ""; return;
+            }
 
-                for (let j = i + 1; j < points.length; j++) {
-                    const p2 = points[j];
-                    const d = Math.hypot(p.x - p2.x, p.y - p2.y);
-                    if (d < maxDist) {
-                        ctx.globalAlpha = 1 - (d / maxDist);
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
+            const prod = masterStock.find(i => q.includes(i.s.toUpperCase()));
+            setTimeout(() => {
+                if(prod) {
+                    lastProductFound = prod;
+                    renderStore([prod]);
+                    content.innerHTML += `
+                        <div class="bot-msg">
+                            He localizado el <b>${prod.s}</b>. Detalles:
+                            <div class="tech-sheet">
+                                • FABRICANTE: ${prod.b}<br>
+                                • MODELO: ${prod.s}<br>
+                                • TIPO: CONTROL Y PROTECCIÓN<br>
+                                • STATUS: STOCK LISTO
+                            </div>
+                            ¿Desea que procese una <b>cotización</b> ahora mismo? (Escriba "Sí" para enviarle a WhatsApp)
+                        </div>`;
+                } else {
+                    content.innerHTML += `<div class="bot-msg">Como experto técnico de Thekna, le sugiero ingresar un SKU. ¿Desea ayuda con Eaton o algún componente de automatización?</div>`;
                 }
-            });
-            requestAnimationFrame(animate);
+                content.scrollTop = content.scrollHeight;
+            }, 500);
+            input.value = "";
         }
-
-        window.addEventListener('resize', init);
-        init();
-        animate();
-
-        // Contadores
-        const runCounters = () => {
-            document.querySelectorAll('.counter').forEach(c => {
-                const target = parseInt(c.getAttribute('data-target'));
-                let count = 0;
-                const update = () => {
-                    if(count < target) { count += target/60; c.innerText = Math.ceil(count); setTimeout(update, 20); }
-                    else { c.innerText = target; }
-                };
-                update();
-            });
-        };
-        new IntersectionObserver((entries, observer) => {
-            if(entries[0].isIntersecting) { runCounters(); observer.disconnect(); }
-        }, { threshold: 0.5 }).observe(document.querySelector('#stats-section'));
-
-        let qCount = 0;
-        const brain = {
-            "siemens": "Socio estratégico líder en PLCs S7-1200/1500 y HMIs.",
-            "eaton": "Marca líder en control industrial y protección de energía.",
-            "rh": "Identificamos talento IT especializado alineando propósito y cultura.",
-            "it": "Desarrollamos soluciones Cloud y Full Stack bajo el sello THEKNAIT.",
-            "at": "Consolidamos arquitectura de planta mediante distribución directa."
-        };
-
-        function handleChat() {
-            const i = document.getElementById('chat-input'); const c = document.getElementById('chat-content');
-            if(!i.value) return;
-            c.innerHTML += `<div class="p-3 bg-pink-500 text-white rounded-2xl ml-auto text-right text-xs mb-3 font-bold uppercase">${i.value}</div>`;
-            const q = i.value.toLowerCase();
-            let r = "Creo que esto es lo que estás buscando, si es así ¿quieres que te transfiera con un ejecutivo especializado?";
-            for(let key in brain) { if(q.includes(key)) r = brain[key] + "<br><br>" + r; }
-            qCount++;
-            if(qCount >= 4) { setTimeout(() => window.open("https://wa.me/525996901908?text=Solicito%20atención%20especializada"), 2000); }
-            setTimeout(() => { c.innerHTML += `<div class="p-4 bg-gray-100 rounded-2xl text-gray-700 text-xs mb-3 italic">${r}</div>`; c.scrollTop = c.scrollHeight; }, 750);
-            i.value = '';
-        }
-        function toggleChat() { const w = document.getElementById('chat-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
-        function openPage(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
-        function closePage(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = 'auto'; }
-        
-        document.getElementById("thekna-form").addEventListener("submit", async e => {
-            e.preventDefault();
-            document.getElementById("btn-submit").innerText = "SISTEMA_PROCESANDO_";
-            fetch(e.target.action, { method: 'POST', body: new FormData(e.target), headers: { 'Accept': 'application/json' } })
-            .then(() => { document.getElementById("btn-submit").innerText = "SISTEMA_REINICIADO"; e.target.reset(); });
-        });
+        window.onload = init;
     </script>
 </body>
 </html>
